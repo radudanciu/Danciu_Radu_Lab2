@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Danciu_Radu_Lab2.Data;
 using Danciu_Radu_Lab2.Models;
 
-namespace Danciu_Radu_Lab2.Pages.Books
+namespace Danciu_Radu_Lab2.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
@@ -19,8 +19,7 @@ namespace Danciu_Radu_Lab2.Pages.Books
             _context = context;
         }
 
-        public Book Book { get; set; } = default!;
-        public IEnumerable<Category> Categories { get; set; } = Enumerable.Empty<Category>();
+        public Category Category { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,19 +28,15 @@ namespace Danciu_Radu_Lab2.Pages.Books
                 return NotFound();
             }
 
-            Book = await _context.Book
-                .Include(b => b.BookCategories)        // Include the BookCategories
-                .ThenInclude(bc => bc.Category)        // Then include the Category for each BookCategory
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (Book == null)
+            var category = await _context.Category.FirstOrDefaultAsync(m => m.ID == id);
+            if (category == null)
             {
                 return NotFound();
             }
-
-            // Extract categories from the BookCategories navigation property
-            Categories = Book.BookCategories.Select(bc => bc.Category);
-
+            else
+            {
+                Category = category;
+            }
             return Page();
         }
     }

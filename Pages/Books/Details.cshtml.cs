@@ -30,8 +30,9 @@ namespace Danciu_Radu_Lab2.Pages.Books
             }
 
             Book = await _context.Book
-                .Include(b => b.BookCategories)        // Include the BookCategories
-                .ThenInclude(bc => bc.Category)        // Then include the Category for each BookCategory
+                .Include(b => b.Author)
+                .Include(b => b.BookCategories)    
+                .ThenInclude(bc => bc.Category)      
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Book == null)

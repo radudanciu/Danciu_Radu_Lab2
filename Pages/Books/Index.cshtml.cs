@@ -25,11 +25,27 @@ namespace Danciu_Radu_Lab2.Pages.Books
         public int BookID { get; set; }
         public int CategoryID { get; set; }
 
+       /* public IActionResult OnGet()
+        {
+            var authorList = _context.Author.Select(x => new
+            {
+                x.ID,
+                FullName = x.FirstName + " " + x.LastName
+            });
+            //ViewData["AuthorID"] = new SelectList(authorList, "ID", "FullName");
+            //ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "Publisher");
+
+            var book = new Book();
+            book.BookCategories = new List<BookCategory>();
+
+            return Page();
+        }*/
+
         public async Task OnGetAsync(int? id, int? categoryID)
         {
-            // Load the book data
             BookD.Books = await _context.Book
                 .Include(b => b.Publisher)
+                .Include(b => b.Author)
                 .Include(b => b.BookCategories)
                 .ThenInclude(b => b.Category)
                 .AsNoTracking()
@@ -50,7 +66,6 @@ namespace Danciu_Radu_Lab2.Pages.Books
             }
             else
             {
-                // Fallback if no specific book is selected
                 Book = await _context.Book
                     .Include(b => b.Publisher)
                     .Include(b => b.Author)
